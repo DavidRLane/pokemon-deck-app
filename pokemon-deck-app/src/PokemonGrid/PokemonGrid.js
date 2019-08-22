@@ -12,7 +12,7 @@ class PokemonGrid extends React.Component {
             weight: '',
             inBag: '',
             description: '',
-            abilities: '',
+            type: '',
             location: ''
         };
         this.MOCK_DESCRIPTION = `Lorem ipsum dolor sit amet, natoque amet vestibulum dui sit et convallis, 
@@ -25,42 +25,55 @@ class PokemonGrid extends React.Component {
             Eu turpis vitae pretium proin.`;
         this.currentPokemon = this.NOT_FOUND;
         this.pokemonList = [];
+        this.pokemonSummary = [];
         this.getAllPokemonUrls = this.getAllPokemonUrls.bind(this);
         this.assignPokemonDetails = this.assignPokemonDetails.bind(this);
         this.openPokemonDetails = this.openPokemonDetails.bind(this);
+        this.createPokemonElement = this.createPokemonElement.bind(this);
+
+        this.state = {
+            toggleSavedView: false,
+            summaryList: []
+        }
     }
 
+    //Start Up Function
     componentDidMount() {
         this.getAllPokemonUrls();
     }
 
     getAllPokemonUrls() {
+        //All Gen 1 Pokemon
         fetch("https://pokeapi.co/api/v2/generation/1/", {
             method: 'GET',
             headers: {}
         })
         .then(response => response.json())
         .then(response => {
-            console.log("All Pokemon", response);
             this.getAllPokemon(response.pokemon_species);
         });
     }
 
     async getAllPokemon(pokemonList) {
         for(var i in pokemonList) {
+            //Each Pokemon Detail Info
             var pokemonUrl = pokemonList[i].url.replace('pokemon-species', 'pokemon');
             var response = await fetch(pokemonUrl);
             var json = await response.json();
+
             this.pokemonList.push(this.assignPokemonDetails(json)); 
         }
+
+        this.setState({ summaryList: this.createPokemonElement() })
+        console.log("All Pokemon Details", this.pokemonList);
     }
 
     assignPokemonDetails(details) {
-        var allAbilities = [];
-        for(var i in details.abilities) {
-            allAbilities.push(details.abilities[i].ability.name);
+        var allTypes= [];
+        for(var i in details.types) {
+            allTypes.push(details.types[i].type.name);
         }
-        allAbilities = allAbilities.join(" | ");
+        allTypes = allTypes.join(" / ");
 
         return {
             picture: details.sprites.front_default,
@@ -69,13 +82,24 @@ class PokemonGrid extends React.Component {
             weight: details.weight,
             inBag: false,
             description: this.MOCK_DESCRIPTION,
-            abilities: allAbilities,
+            type: allTypes,
             location: null
         }
     }
 
+    createPokemonElement() {
+        return this.pokemonList.map((pokemon, index) => {
+            return (
+                <div className="pokemon-grid-element" key={pokemon.name}>
+                    <img alt="#" src={pokemon.picture} onClick={() => this.openPokemonDetails('name')}/>
+                    <h3>{pokemon.name}</h3>
+                </div>
+            );    
+        });
+    }
+
     openPokemonDetails(name) {
-        //Route to Pokemon Details with Pokemon Info for API
+        //Route to Pokemon Location API
         fetch("https://api.craft-demo.net/pokemon/1", {
             method: 'GET',
             headers: {
@@ -87,33 +111,18 @@ class PokemonGrid extends React.Component {
             if(pokemonDetails) {
                 console.log("Pokemon 1:", pokemonDetails);
             } else {
-                //Default to "Not Found" Details
-                this.currentPokemon = this.NOT_FOUND
+                this.currentPokemon.location = null;
             }
         });
     }
+
 
     render() {
         return (
             <div className="pokemon-grid">
                 {/* All 151 Pokemon */}
                 <div className="pokemon-grid-row">
-                    <div className="pokemon-grid-element">
-                        Grid Element 1
-                        <button onClick={() => this.openPokemonDetails('name')}>Get Details</button>
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Grid Element 2
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Grid Element 3
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Grid Element 4
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Grid Element 5
-                    </div>
+                    {this.state.summaryList}
                 </div>
 
                 {/* Saved Pokemon */}
@@ -121,18 +130,6 @@ class PokemonGrid extends React.Component {
                     <div className="pokemon-grid-element">
                         Saved Grid Element 1
                         <button onClick={() => this.openPokemonDetails('name')}>Get Details</button>
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Saved Grid Element 2
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Saved Grid Element 3
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Saved Grid Element 4
-                    </div>
-                    <div className="pokemon-grid-element">
-                        Saved Grid Element 5
                     </div>
                 </div>
             </div>

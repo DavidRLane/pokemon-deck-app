@@ -5,8 +5,9 @@
 .pokemon-grid-row {
     display: flex;
     flex-direction: row;
+    flex-flow: row wrap;
 }
 
 .pokemon-grid-element {
-    padding: 10px
+    padding: 10px;
 }
