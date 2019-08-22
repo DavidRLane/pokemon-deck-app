@@ -25,15 +25,15 @@ class PokemonGrid extends React.Component {
             Eu turpis vitae pretium proin.`;
         this.currentPokemon = this.NOT_FOUND;
         this.pokemonList = [];
-        this.pokemonSummary = [];
         this.searchCriteria = '';
+        
         this.getAllPokemonUrls = this.getAllPokemonUrls.bind(this);
         this.assignPokemonDetails = this.assignPokemonDetails.bind(this);
         this.openPokemonDetails = this.openPokemonDetails.bind(this);
         this.createPokemonElements = this.createPokemonElements.bind(this);
         this.filterPokemon = this.filterPokemon.bind(this);
         this.restoreAllPokemon = this.restoreAllPokemon.bind(this);
-        this.assignCriteria = this.assignCriteria.bind(this);
+        this.assignSearchCriteria = this.assignSearchCriteria.bind(this);
 
         this.state = {
             toggleSavedView: false,
@@ -138,7 +138,7 @@ class PokemonGrid extends React.Component {
         this.setState({ searchCriteria: '' }, () => this.filterPokemon());
     }
 
-    assignCriteria(event) {
+    assignSearchCriteria(event) {
         this.setState({ searchCriteria: event.target.value });
     }
 
@@ -146,19 +146,13 @@ class PokemonGrid extends React.Component {
         return (
             <div className="pokemon-grid">
                 <div className="pokemon-search-bar">
-                    <input type="text" value={this.state.searchCriteria} onChange={this.assignCriteria} />
+                    <input type="text" value={this.state.searchCriteria} onChange={this.assignSearchCriteria} />
                     <input type="submit" value="Search" onClick={this.filterPokemon}/>
                     <input type="submit" value="Show All" onClick={this.restoreAllPokemon}/>
                 </div>
 
-                {/* All 151 Pokemon */}
                 <div className="pokemon-grid-row">
-                    {this.state.summaryList}
-                </div>
-
-                {/* Saved Pokemon */}
-                <div className="pokemon-grid-row">
-                    {this.state.savedList}
+                    { this.state.toggleSavedView ? this.state.savedList : this.state.summaryList}
                 </div>
             </div>
         );
