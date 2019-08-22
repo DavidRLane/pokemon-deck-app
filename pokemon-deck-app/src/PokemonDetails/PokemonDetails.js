@@ -5,6 +5,7 @@ function PokemonDetails() {
   return (
     <div className="pokemon-details">
         <div className="pokemon-details-info">
+            
             Pokemon
         </div>
         <div className="pokemon-details-map">
