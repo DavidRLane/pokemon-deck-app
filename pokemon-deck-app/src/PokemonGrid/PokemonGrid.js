@@ -26,14 +26,20 @@ class PokemonGrid extends React.Component {
         this.currentPokemon = this.NOT_FOUND;
         this.pokemonList = [];
         this.pokemonSummary = [];
+        this.searchCriteria = '';
         this.getAllPokemonUrls = this.getAllPokemonUrls.bind(this);
         this.assignPokemonDetails = this.assignPokemonDetails.bind(this);
         this.openPokemonDetails = this.openPokemonDetails.bind(this);
-        this.createPokemonElement = this.createPokemonElement.bind(this);
+        this.createPokemonElements = this.createPokemonElements.bind(this);
+        this.filterPokemon = this.filterPokemon.bind(this);
+        this.restoreAllPokemon = this.restoreAllPokemon.bind(this);
+        this.assignCriteria = this.assignCriteria.bind(this);
 
         this.state = {
             toggleSavedView: false,
-            summaryList: []
+            searchCriteria: '',
+            summaryList: [],
+            savedList: []
         }
     }
 
@@ -63,9 +69,7 @@ class PokemonGrid extends React.Component {
 
             this.pokemonList.push(this.assignPokemonDetails(json)); 
         }
-
-        this.setState({ summaryList: this.createPokemonElement() })
-        console.log("All Pokemon Details", this.pokemonList);
+        this.setState({ summaryList: this.createPokemonElements(this.pokemonList) })
     }
 
     assignPokemonDetails(details) {
@@ -87,11 +91,11 @@ class PokemonGrid extends React.Component {
         }
     }
 
-    createPokemonElement() {
-        return this.pokemonList.map((pokemon, index) => {
+    createPokemonElements(tempList) {
+        return tempList.map((pokemon) => {
             return (
                 <div className="pokemon-grid-element" key={pokemon.name}>
-                    <img alt="#" src={pokemon.picture} onClick={() => this.openPokemonDetails('name')}/>
+                    <img alt="Pokemon Sprite" src={pokemon.picture} onClick={() => this.openPokemonDetails('name')}/>
                     <h3>{pokemon.name}</h3>
                 </div>
             );    
@@ -116,10 +120,37 @@ class PokemonGrid extends React.Component {
         });
     }
 
+    filterPokemon() {
+        if(this.state.searchCriteria.length > 0) {
+            var results = [];
+            var pokemonNameRegex = new RegExp(this.state.searchCriteria, 'i');
+    
+            results = this.pokemonList.filter(function(pokemon) {
+                return pokemonNameRegex.test(pokemon.name);
+            });
+            this.setState({ summaryList: this.createPokemonElements(results) });
+        } else {
+            this.setState({ summaryList: this.createPokemonElements(this.pokemonList) });
+        }
+    }
+
+    restoreAllPokemon() {
+        this.setState({ searchCriteria: '' }, () => this.filterPokemon());
+    }
+
+    assignCriteria(event) {
+        this.setState({ searchCriteria: event.target.value });
+    }
 
     render() {
         return (
             <div className="pokemon-grid">
+                <div className="pokemon-search-bar">
+                    <input type="text" value={this.state.searchCriteria} onChange={this.assignCriteria} />
+                    <input type="submit" value="Search" onClick={this.filterPokemon}/>
+                    <input type="submit" value="Show All" onClick={this.restoreAllPokemon}/>
+                </div>
+
                 {/* All 151 Pokemon */}
                 <div className="pokemon-grid-row">
                     {this.state.summaryList}
@@ -127,10 +158,7 @@ class PokemonGrid extends React.Component {
 
                 {/* Saved Pokemon */}
                 <div className="pokemon-grid-row">
-                    <div className="pokemon-grid-element">
-                        Saved Grid Element 1
-                        <button onClick={() => this.openPokemonDetails('name')}>Get Details</button>
-                    </div>
+                    {this.state.savedList}
                 </div>
             </div>
         );

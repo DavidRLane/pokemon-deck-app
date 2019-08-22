@@ -2,16 +2,19 @@ import React from 'react';
 import './PokemonDeck.css';
 import PokemonGrid from './PokemonGrid/PokemonGrid';
 import PokemonDisplayButtons from './PokemonDisplayButtons/PokemonDisplayButtons';
-import SearchBar from './SearchBar/SearchBar';
 
 class PokemonDeck extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+
   render() {
     return (
       <div className="pokemon-deck">
         <header className="pokemon-deck-header">
-          <PokemonDisplayButtons/>
-          <SearchBar/>
-          <PokemonGrid/>
+          <PokemonDisplayButtons />
+          <PokemonGrid />
         </header>
       </div>
     );
