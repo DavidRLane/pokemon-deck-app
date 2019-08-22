@@ -1,0 +1,12 @@
+.pokemon-grid {
+
+}
+
+.pokemon-grid-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.pokemon-grid-element {
+    padding: 10px
+}
