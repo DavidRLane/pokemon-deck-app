@@ -5,16 +5,6 @@ class PokemonGrid extends React.Component {
     constructor(props) {
         super(props);
 
-        this.NOT_FOUND = {
-            picture: '',
-            name: '',
-            height: '',
-            weight: '',
-            inBag: '',
-            description: '',
-            type: '',
-            location: ''
-        };
         this.MOCK_DESCRIPTION = `Lorem ipsum dolor sit amet, natoque amet vestibulum dui sit et convallis, 
             ut bibendum aliquam, lorem nulla quam ridiculus sed sed, nec sapien vestibulum turpis sed odio nisl. 
             Lacus quis in libero lacinia ultricies, dui ac integer, tempor felis accumsan consectetuer. 
@@ -23,7 +13,18 @@ class PokemonGrid extends React.Component {
             ultricies volutpat faucibus vel lectus. Sapien purus etiam, nibh vitae donec, eleifend mauris amet urna in elit, 
             ut ante lectus nec lorem leo donec, aut vel tortor nec diam. Quam sollicitudin viverra wisi mattis in aenean. 
             Eu turpis vitae pretium proin.`;
-        this.currentPokemon = this.NOT_FOUND;
+        this.NOT_FOUND = {
+            id: '',
+            picture: '',
+            name: '',
+            height: '',
+            weight: '',
+            inBag: '',
+            description: this.MOCK_DESCRIPTION,
+            type: '',
+            location: ''
+        };
+        
         this.pokemonList = [];
         this.searchCriteria = '';
         
@@ -45,7 +46,11 @@ class PokemonGrid extends React.Component {
 
     //Start Up Function
     componentDidMount() {
-        this.getAllPokemonUrls();
+        console.log("Pokemon List", this.pokemonList, this.pokemonList.length);
+
+        if(this.pokemonList.length === 0) {
+            this.getAllPokemonUrls();
+        }
     }
 
     getAllPokemonUrls() {
@@ -72,6 +77,7 @@ class PokemonGrid extends React.Component {
         this.setState({ summaryList: this.createPokemonElements(this.pokemonList) })
     }
 
+    //Return Object of all Relevant Pokemon Details
     assignPokemonDetails(details) {
         var allTypes= [];
         for(var i in details.types) {
@@ -80,6 +86,7 @@ class PokemonGrid extends React.Component {
         allTypes = allTypes.join(" / ");
 
         return {
+            id: details.id,
             picture: details.sprites.front_default,
             name: details.name,
             height: details.height,
@@ -91,33 +98,38 @@ class PokemonGrid extends React.Component {
         }
     }
 
+    //Create Pokemon Summary Card
     createPokemonElements(tempList) {
         return tempList.map((pokemon) => {
             return (
                 <div className="pokemon-grid-element" key={pokemon.name}>
-                    <img alt="Pokemon Sprite" src={pokemon.picture} onClick={() => this.openPokemonDetails('name')}/>
+                    <img alt="Pokemon Sprite" src={pokemon.picture} onClick={() => this.openPokemonDetails(pokemon)}/>
                     <h3>{pokemon.name}</h3>
                 </div>
             );    
         });
     }
 
-    openPokemonDetails(name) {
-        //Route to Pokemon Location API
-        fetch("https://api.craft-demo.net/pokemon/1", {
-            method: 'GET',
-            headers: {
-                "x-api-key": "HHko9Fuxf293b3w56zAJ89s3IcO9D5enaEPIg86l"
-            }
-        })
-        .then(response => response.json())
-        .then(pokemonDetails => {
-            if(pokemonDetails) {
-                console.log("Pokemon 1:", pokemonDetails);
-            } else {
-                this.currentPokemon.location = null;
-            }
-        });
+    //Find Pokemon Location; If pokemon was already searched, send back pokemon info without fetch
+    openPokemonDetails(pokemonObject) {
+        console.log("Searching for:", pokemonObject);
+
+        if(pokemonObject.location == null) {
+            //Route to Pokemon Location API
+            fetch(`https://api.craft-demo.net/pokemon/${pokemonObject.id}`, {
+                method: 'GET',
+                headers: {
+                    "x-api-key": "HHko9Fuxf293b3w56zAJ89s3IcO9D5enaEPIg86l"
+                }
+            })
+            .then(response => response.json())
+            .then(location => {
+                pokemonObject.location = location;
+                this.props.selectPokemon(pokemonObject);
+            });
+        } else {
+            this.props.selectPokemon(pokemonObject);
+        }
     }
 
     filterPokemon() {
