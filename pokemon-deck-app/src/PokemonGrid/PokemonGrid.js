@@ -48,9 +48,12 @@ class PokemonGrid extends React.Component {
 
     //Start Up Function
     componentWillMount() {
-        if(this.pokemonList.length === 0) {
+        if(this.props.allPokemon.length === 0) {
             this.getAllPokemonUrls();
+        } else {
+            this.setState({ summaryList: this.props.allPokemon });
         }
+        this.setState({ savedList: this.createPokemonElements(this.props.savedPokemon) });
     }
 
     getAllPokemonUrls() {
@@ -74,7 +77,12 @@ class PokemonGrid extends React.Component {
 
             this.pokemonList.push(this.assignPokemonDetails(json)); 
         }
-        this.setState({ summaryList: this.createPokemonElements(this.pokemonList) })
+
+        this.setState({ 
+            summaryList: this.createPokemonElements(this.pokemonList),
+        }, () => {
+            this.props.saveAllPokemon(this.state.summaryList);
+        })
     }
 
     //Return Object of all Relevant Pokemon Details
@@ -153,14 +161,16 @@ class PokemonGrid extends React.Component {
             results = this.pokemonList.filter(function(pokemon) {
                 return pokemonNameRegex.test(pokemon.name);
             });
+
             this.setState({ summaryList: this.createPokemonElements(results) });
-        } else {
-            this.setState({ summaryList: this.createPokemonElements(this.pokemonList) });
         }
     }
 
     restoreAllPokemon() {
-        this.setState({ searchCriteria: '' }, () => this.filterPokemon());
+        this.setState({ 
+            searchCriteria: '',
+            summaryList: this.props.allPokemon
+        });
     }
 
     assignSearchCriteria(event) {
@@ -187,6 +197,10 @@ class PokemonGrid extends React.Component {
                     <input type="text" value={this.state.searchCriteria} onChange={this.assignSearchCriteria} />
                     <input type="submit" value="Search" onClick={this.filterPokemon}/>
                     <input type="submit" value="Show All" onClick={this.restoreAllPokemon}/>
+                </div>
+
+                <div className="pokemon-grid-title">
+                    { this.state.toggleSavedView ? <h1>All Saved Pokemon</h1> : <h1>All 151 Pokemon</h1>}
                 </div>
 
                 <div className="pokemon-grid-row">

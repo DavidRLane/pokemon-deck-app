@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 
-import './PokemonMap.css';
+const pokemonMapStyle = {
+    color: 'black',
+    fontSize: 22,
+    fontWeight: 'bold'
+};
 
 const AnyReactComponent = ({text}) => 
-    <div className="map-marker">
+    <div className="map-marker" style={pokemonMapStyle}>
         {text}
     </div>;
 
@@ -16,7 +20,7 @@ class PokemonMap extends Component {
             lat: 32.7157, 
             lng: -117.1611
         }
-        this.zoom = 10.5;
+        this.zoom = 10;
 
         this.createMapComponents = this.createMapComponents.bind(this);
 
@@ -36,15 +40,13 @@ class PokemonMap extends Component {
         
         if(this.props.pokemonData && this.props.pokemonData.location) {
             temp = this.props.pokemonData.location.map((marker, index) => {
-                var locationName = `Location ${index+1}`;
-
+                var locationName = index+1;
                 return (
                     <AnyReactComponent 
                         key={index}
                         lat={marker.lat}
                         lng={marker.lng}
                         text={locationName}
-                        className="map-marker"      
                     />
                 );    
             });
