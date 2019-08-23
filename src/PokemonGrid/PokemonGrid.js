@@ -24,10 +24,10 @@ class PokemonGrid extends React.Component {
             type: '',
             location: ''
         };
-        
+
         this.pokemonList = [];
         this.searchCriteria = '';
-        
+
         this.getAllPokemonUrls = this.getAllPokemonUrls.bind(this);
         this.assignPokemonDetails = this.assignPokemonDetails.bind(this);
         this.openPokemonDetails = this.openPokemonDetails.bind(this);
@@ -48,7 +48,7 @@ class PokemonGrid extends React.Component {
 
     //Start Up Function
     componentWillMount() {
-        if(this.props.allPokemon.length === 0) {
+        if (this.props.allPokemon.length === 0) {
             this.getAllPokemonUrls();
         } else {
             this.setState({ summaryList: this.props.allPokemon });
@@ -62,23 +62,23 @@ class PokemonGrid extends React.Component {
             method: 'GET',
             headers: {}
         })
-        .then(response => response.json())
-        .then(response => {
-            this.getAllPokemon(response.pokemon_species);
-        });
+            .then(response => response.json())
+            .then(response => {
+                this.getAllPokemon(response.pokemon_species);
+            });
     }
 
     async getAllPokemon(pokemonList) {
-        for(var i in pokemonList) {
+        for (var i in pokemonList) {
             //Each Pokemon Detail Info
             var pokemonUrl = pokemonList[i].url.replace('pokemon-species', 'pokemon');
             var response = await fetch(pokemonUrl);
             var json = await response.json();
 
-            this.pokemonList.push(this.assignPokemonDetails(json)); 
+            this.pokemonList.push(this.assignPokemonDetails(json));
         }
 
-        this.setState({ 
+        this.setState({
             summaryList: this.createPokemonElements(this.pokemonList),
         }, () => {
             this.props.saveAllPokemon(this.state.summaryList);
@@ -87,8 +87,8 @@ class PokemonGrid extends React.Component {
 
     //Return Object of all Relevant Pokemon Details
     assignPokemonDetails(details) {
-        var allTypes= [];
-        for(var i in details.types) {
+        var allTypes = [];
+        for (var i in details.types) {
             allTypes.push(details.types[i].type.name);
         }
         allTypes = allTypes.join(" / ");
@@ -111,16 +111,16 @@ class PokemonGrid extends React.Component {
         return tempList.map((pokemon) => {
             return (
                 <div className="pokemon-grid-element" key={pokemon.name}>
-                    <img alt="Pokemon Sprite" src={pokemon.picture} onClick={() => this.openPokemonDetails(pokemon)}/>
+                    <img alt="Pokemon Sprite" src={pokemon.picture} onClick={() => this.openPokemonDetails(pokemon)} />
                     <h3>{pokemon.name}</h3>
                 </div>
-            );    
+            );
         });
     }
 
     //Find Pokemon Location; If pokemon was already searched, send back pokemon info without fetch
     openPokemonDetails(pokemonObject) {
-        if(pokemonObject.location == null) {
+        if (pokemonObject.location == null) {
             //Route to Pokemon Location API
             fetch(`https://api.craft-demo.net/pokemon/${pokemonObject.id}`, {
                 method: 'GET',
@@ -128,13 +128,13 @@ class PokemonGrid extends React.Component {
                     "x-api-key": "HHko9Fuxf293b3w56zAJ89s3IcO9D5enaEPIg86l"
                 }
             })
-            .then(response => response.json())
-            .then(location => {
-                if(location.locations.length > 0) {
-                    pokemonObject.location = this.generateLocationsForGoogleApi(location.locations);
-                }
-                this.props.selectPokemon(pokemonObject);
-            });
+                .then(response => response.json())
+                .then(location => {
+                    if (location.locations.length > 0) {
+                        pokemonObject.location = this.generateLocationsForGoogleApi(location.locations);
+                    }
+                    this.props.selectPokemon(pokemonObject);
+                });
         } else {
             this.props.selectPokemon(pokemonObject);
         }
@@ -142,7 +142,7 @@ class PokemonGrid extends React.Component {
 
     generateLocationsForGoogleApi(data) {
         var coordinates = [];
-        for(var index in data) {
+        for (var index in data) {
 
             var temp = data[index].split(",");
             coordinates.push({
@@ -154,20 +154,20 @@ class PokemonGrid extends React.Component {
     }
 
     filterPokemon() {
-        if(this.state.searchCriteria.length > 0) {
+        if (this.state.searchCriteria.length > 0) {
             var results = [];
             var pokemonNameRegex = new RegExp(this.state.searchCriteria, 'i');
-    
-            results = this.pokemonList.filter(function(pokemon) {
+
+            results = this.pokemonList.filter(function (pokemon) {
                 return pokemonNameRegex.test(pokemon.name);
             });
 
-            this.setState({ summaryList: this.createPokemonElements(results) });
+            (this.setState({ summaryList: this.createPokemonElements(results) })).bind(results);
         }
     }
 
     restoreAllPokemon() {
-        this.setState({ 
+        this.setState({
             searchCriteria: '',
             summaryList: this.props.allPokemon
         });
@@ -195,16 +195,16 @@ class PokemonGrid extends React.Component {
 
                 <div className="pokemon-search-bar">
                     <input type="text" value={this.state.searchCriteria} onChange={this.assignSearchCriteria} />
-                    <input type="submit" value="Search" onClick={this.filterPokemon}/>
-                    <input type="submit" value="Show All" onClick={this.restoreAllPokemon}/>
+                    <input type="submit" value="Search" onClick={this.filterPokemon} />
+                    <input type="submit" value="Show All" onClick={this.restoreAllPokemon} />
                 </div>
 
                 <div className="pokemon-grid-title">
-                    { this.state.toggleSavedView ? <h1>All Saved Pokemon</h1> : <h1>All 151 Pokemon</h1>}
+                    {this.state.toggleSavedView ? <h1>All Saved Pokemon</h1> : <h1>All 151 Pokemon</h1>}
                 </div>
 
                 <div className="pokemon-grid-row">
-                    { this.state.toggleSavedView ? this.state.savedList : this.state.summaryList}
+                    {this.state.toggleSavedView ? this.state.savedList : this.state.summaryList}
                 </div>
             </div>
         );
