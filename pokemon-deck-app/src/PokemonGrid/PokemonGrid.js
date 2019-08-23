@@ -36,6 +36,7 @@ class PokemonGrid extends React.Component {
         this.filterPokemon = this.filterPokemon.bind(this);
         this.restoreAllPokemon = this.restoreAllPokemon.bind(this);
         this.assignSearchCriteria = this.assignSearchCriteria.bind(this);
+        this.showSavedPokemon = this.showSavedPokemon.bind(this);
 
         this.state = {
             toggleSavedView: false,
@@ -46,7 +47,7 @@ class PokemonGrid extends React.Component {
     }
 
     //Start Up Function
-    componentDidMount() {
+    componentWillMount() {
         if(this.pokemonList.length === 0) {
             this.getAllPokemonUrls();
         }
@@ -131,10 +132,10 @@ class PokemonGrid extends React.Component {
         }
     }
 
-    //Google Map API requires an object with "lat" and "lng" fields to render markers
     generateLocationsForGoogleApi(data) {
         var coordinates = [];
         for(var index in data) {
+
             var temp = data[index].split(",");
             coordinates.push({
                 lat: temp[0],
@@ -144,7 +145,6 @@ class PokemonGrid extends React.Component {
         return coordinates;
     }
 
-    //Use searchCriteria to filter summaryList
     filterPokemon() {
         if(this.state.searchCriteria.length > 0) {
             var results = [];
@@ -167,9 +167,22 @@ class PokemonGrid extends React.Component {
         this.setState({ searchCriteria: event.target.value });
     }
 
+    showSavedPokemon(result) {
+        this.setState({ toggleSavedView: result });
+    }
+
     render() {
         return (
             <div className="pokemon-grid">
+                <div className="pokemon-display-buttons">
+                    <button onClick={() => this.showSavedPokemon(false)}>
+                        All
+                    </button>
+                    <button onClick={() => this.showSavedPokemon(true)}>
+                        Saved
+                    </button>
+                </div>
+
                 <div className="pokemon-search-bar">
                     <input type="text" value={this.state.searchCriteria} onChange={this.assignSearchCriteria} />
                     <input type="submit" value="Search" onClick={this.filterPokemon}/>

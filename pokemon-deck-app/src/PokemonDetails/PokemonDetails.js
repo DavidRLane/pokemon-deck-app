@@ -6,13 +6,17 @@ class PokemonDetails extends React.Component {
   constructor(props) {
     super(props);
 
-    this.pokemonDetailInfo = null;
-    this.pokemonMapInfo = null;
+    this.pokemonInfo = <div className="pokemon-container">No Information Available</div>;
+    this.pokemonMap = <div className="pokemon-container">No Locations Found</div>;
   }
 
-  componentDidMount() {
+
+  componentWillMount() {
+
+    console.log("Props", this.props.data);
+
     if(this.props.data) {
-      this.pokemonDetailInfo = 
+      this.pokemonInfo = 
         <div className="pokemon-details-info">
           <img alt="Pokemon Sprite" src={this.props.data.picture}/>
           <h3>{this.props.data.name}</h3>
@@ -22,15 +26,14 @@ class PokemonDetails extends React.Component {
           <p>In Bag: {this.props.data.inbag ? "True" : "False"}</p>
           <p>{this.props.data.description}</p>
         </div>;
-        
-      this.pokemonMapInfo = 
+      this.pokemonMap = 
         <div className="pokemon-details-map">
-            {!this.props.data.location ? <p>No Locations Found</p> : <p>{this.props.data.location.length} Location(s) Found</p> }
-            <PokemonMap pokemonData={this.props.data}/>
+          {!this.props.data.location ? <p>No Locations Found</p> : <p>{this.props.data.location.length} Location(s) Found</p> }
+          <PokemonMap pokemonData={this.props.data}/>
         </div>;
     } else {
-      this.pokemonDetailInfo = <h1>Information Not Available</h1>
-      this.pokemonMapInfo = <h1>Map Not Available</h1>
+      this.pokemonInfo = <div className="pokemon-container">No Information Available</div>;
+      this.pokemonMap = <div className="pokemon-container">No Locations Found</div>;
     }
   }
 
@@ -42,8 +45,8 @@ class PokemonDetails extends React.Component {
           </button>
 
           <div className="pokemon-details-and-map">
-            {this.pokemonDetailInfo}
-            {this.pokemonMapInfo}
+            {this.pokemonInfo}    
+            {this.pokemonMap}
           </div>
       </div>
     );

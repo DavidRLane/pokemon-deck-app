@@ -34,7 +34,7 @@ class PokemonMap extends Component {
     createMapComponents() {
         var temp = [];
         
-        if(this.props.pokemonData) {
+        if(this.props.pokemonData && this.props.pokemonData.location) {
             temp = this.props.pokemonData.location.map((marker, index) => {
                 var locationName = `Location ${index+1}`;
 

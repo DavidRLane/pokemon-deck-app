@@ -1,7 +1,6 @@
 import React from 'react';
 import './PokemonDeck.css';
 import PokemonGrid from './PokemonGrid/PokemonGrid';
-import PokemonDisplayButtons from './PokemonDisplayButtons/PokemonDisplayButtons';
 import PokemonDetails from './PokemonDetails/PokemonDetails';
 
 class PokemonDeck extends React.Component {
@@ -30,7 +29,6 @@ class PokemonDeck extends React.Component {
     return (
       <div className="pokemon-deck">
         <header className="pokemon-deck-header">
-          <PokemonDisplayButtons />
           { 
             this.state.showGrid 
               ? <PokemonGrid selectPokemon={this.sendPokemonData}/> 
