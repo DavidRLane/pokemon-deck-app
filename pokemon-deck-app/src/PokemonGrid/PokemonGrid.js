@@ -31,6 +31,7 @@ class PokemonGrid extends React.Component {
         this.getAllPokemonUrls = this.getAllPokemonUrls.bind(this);
         this.assignPokemonDetails = this.assignPokemonDetails.bind(this);
         this.openPokemonDetails = this.openPokemonDetails.bind(this);
+        this.generateLocationsForGoogleApi = this.generateLocationsForGoogleApi.bind(this);
         this.createPokemonElements = this.createPokemonElements.bind(this);
         this.filterPokemon = this.filterPokemon.bind(this);
         this.restoreAllPokemon = this.restoreAllPokemon.bind(this);
@@ -46,8 +47,6 @@ class PokemonGrid extends React.Component {
 
     //Start Up Function
     componentDidMount() {
-        console.log("Pokemon List", this.pokemonList, this.pokemonList.length);
-
         if(this.pokemonList.length === 0) {
             this.getAllPokemonUrls();
         }
@@ -112,8 +111,6 @@ class PokemonGrid extends React.Component {
 
     //Find Pokemon Location; If pokemon was already searched, send back pokemon info without fetch
     openPokemonDetails(pokemonObject) {
-        console.log("Searching for:", pokemonObject);
-
         if(pokemonObject.location == null) {
             //Route to Pokemon Location API
             fetch(`https://api.craft-demo.net/pokemon/${pokemonObject.id}`, {
@@ -124,12 +121,26 @@ class PokemonGrid extends React.Component {
             })
             .then(response => response.json())
             .then(location => {
-                pokemonObject.location = location;
+                if(location.locations.length > 0) {
+                    pokemonObject.location = this.generateLocationsForGoogleApi(location.locations);
+                }
                 this.props.selectPokemon(pokemonObject);
             });
         } else {
             this.props.selectPokemon(pokemonObject);
         }
+    }
+
+    generateLocationsForGoogleApi(data) {
+        var coordinates = [];
+        for(var index in data) {
+            var temp = data[index].split(",");
+            coordinates.push({
+                lat: temp[0],
+                lng: temp[1]
+            });
+        }
+        return coordinates;
     }
 
     filterPokemon() {

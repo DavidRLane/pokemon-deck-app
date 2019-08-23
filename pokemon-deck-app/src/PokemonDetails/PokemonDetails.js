@@ -1,21 +1,20 @@
 import React from 'react';
 import './PokemonDetails.css';
+import PokemonMap from '../PokemonMap/PokemonMap';
 
 class PokemonDetails extends React.Component {
   constructor(props) {
     super(props);
-
-    console.log("Props", props);
   }
 
   render() {
     return (
-      <div>
+      <div className="pokemon-details">
           <button className="pokemon-revert-button" onClick={this.props.switchViews}>
             Go Back to Summary
           </button>
 
-          <div className="pokemon-details">
+          <div className="pokemon-details-and-map">
             <div className="pokemon-details-info">
                 <img alt="Pokemon Sprite" src={this.props.data.picture}/>
                 <h3>{this.props.data.name}</h3>
@@ -26,7 +25,7 @@ class PokemonDetails extends React.Component {
                 <p>{this.props.data.description}</p>
             </div>
             <div className="pokemon-details-map">
-                Google Map
+                <PokemonMap pokemonData={this.props.data}/>
             </div>
           </div>
       </div>

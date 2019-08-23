@@ -1,6 +1,15 @@
+.pokemon-revert-button {
+    padding: 5px;
+}
+
 .pokemon-details {
+    padding: 10px;
+}
+
+.pokemon-details-and-map {
     display: flex;
     flex-direction: row;
+    padding: 15px;
 }
 
 .pokemon-details-info {
@@ -12,4 +21,5 @@
 
 .pokemon-details-map {
     flex: 3;
+    padding: 10px;
 }

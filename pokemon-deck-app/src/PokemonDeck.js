@@ -8,7 +8,6 @@ class PokemonDeck extends React.Component {
   constructor(props) {
     super(props);
 
-
     this.sendPokemonData = this.sendPokemonData.bind(this);
     this.switchPokemonView = this.switchPokemonView.bind(this);
 
@@ -19,9 +18,6 @@ class PokemonDeck extends React.Component {
   }
 
   sendPokemonData(newData) {
-
-    console.log("New Data", newData);
-
     this.setState({ pokemonData: newData }, () => this.switchPokemonView());
   }
 
