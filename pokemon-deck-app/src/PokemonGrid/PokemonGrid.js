@@ -131,6 +131,7 @@ class PokemonGrid extends React.Component {
         }
     }
 
+    //Google Map API requires an object with "lat" and "lng" fields to render markers
     generateLocationsForGoogleApi(data) {
         var coordinates = [];
         for(var index in data) {
@@ -143,6 +144,7 @@ class PokemonGrid extends React.Component {
         return coordinates;
     }
 
+    //Use searchCriteria to filter summaryList
     filterPokemon() {
         if(this.state.searchCriteria.length > 0) {
             var results = [];

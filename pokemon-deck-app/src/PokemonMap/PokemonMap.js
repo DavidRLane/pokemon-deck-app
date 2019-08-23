@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 
-const AnyReactComponent = ({text}) => <div className="map-marker">{text}</div>;
+import './PokemonMap.css';
+
+const AnyReactComponent = ({text}) => 
+    <div className="map-marker">
+        {text}
+    </div>;
 
 class PokemonMap extends Component {
     constructor(props) {
@@ -29,7 +34,7 @@ class PokemonMap extends Component {
     createMapComponents() {
         var temp = [];
         
-        if(this.props.pokemonData.location) {
+        if(this.props.pokemonData) {
             temp = this.props.pokemonData.location.map((marker, index) => {
                 var locationName = `Location ${index+1}`;
 
@@ -38,7 +43,8 @@ class PokemonMap extends Component {
                         key={index}
                         lat={marker.lat}
                         lng={marker.lng}
-                        text={locationName}      
+                        text={locationName}
+                        className="map-marker"      
                     />
                 );    
             });
