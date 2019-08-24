@@ -162,7 +162,7 @@ class PokemonGrid extends React.Component {
                 return pokemonNameRegex.test(pokemon.name);
             });
 
-            (this.setState({ summaryList: this.createPokemonElements(results) })).bind(results);
+            this.setState({ summaryList: this.createPokemonElements(results) });
         }
     }
 
