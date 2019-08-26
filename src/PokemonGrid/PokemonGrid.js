@@ -51,7 +51,9 @@ class PokemonGrid extends React.Component {
         if (this.props.allPokemon.length === 0) {
             this.getAllPokemonUrls();
         } else {
-            this.setState({ summaryList: this.props.allPokemon });
+            this.setState({ summaryList: this.props.allPokemon }, () => {
+                this.pokemonList = this.props.summaryPokemon;
+            });
         }
         this.setState({ savedList: this.createPokemonElements(this.props.savedPokemon) });
     }
@@ -82,6 +84,7 @@ class PokemonGrid extends React.Component {
             summaryList: this.createPokemonElements(this.pokemonList),
         }, () => {
             this.props.saveAllPokemon(this.state.summaryList);
+            this.props.saveAllSummaryPokemon(this.pokemonList);
         })
     }
 

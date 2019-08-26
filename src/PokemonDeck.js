@@ -11,9 +11,11 @@ class PokemonDeck extends React.Component {
     this.switchPokemonView = this.switchPokemonView.bind(this);
     this.updateSavedPokemon = this.updateSavedPokemon.bind(this);
     this.saveAllPokemon = this.saveAllPokemon.bind(this);
+    this.saveAllSummaryPokemon = this.saveAllSummaryPokemon.bind(this);
 
     this.state = {
       pokemonData: null,
+      summaryPokemon: [],
       allPokemon: [],
       savedPokemon: [],
       showGrid: true,
@@ -36,6 +38,10 @@ class PokemonDeck extends React.Component {
     this.setState({ allPokemon: allPokemon });
   }
 
+  saveAllSummaryPokemon(allPokemon) {
+    this.setState({ summaryPokemon: allPokemon });
+  }
+
   render() {
     return (
       <div className="pokemon-deck">
@@ -44,9 +50,11 @@ class PokemonDeck extends React.Component {
             this.state.showGrid 
               ? <PokemonGrid 
                   allPokemon={this.state.allPokemon}
+                  summaryPokemon={this.state.summaryPokemon}
                   savedPokemon={this.state.savedPokemon}
                   selectPokemon={this.sendPokemonData}
-                  saveAllPokemon={this.saveAllPokemon} 
+                  saveAllPokemon={this.saveAllPokemon}
+                  saveAllSummaryPokemon={this.saveAllSummaryPokemon} 
                 /> 
               : <PokemonDetails 
                   pokemonDetails={this.state.pokemonData} 

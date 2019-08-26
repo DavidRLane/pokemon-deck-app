@@ -2,8 +2,8 @@
   "name": "pokemon-deck-app",
   "version": "0.1.0",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/DavidRLane/pokemon-deck-app.git"
+    "type": "git",
+    "url": "https://github.com/DavidRLane/pokemon-deck-app.git"
   },
   "dependencies": {
     "google-map-react": "^1.1.4",
